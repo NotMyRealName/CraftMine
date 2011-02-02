@@ -37,4 +37,12 @@ public class PreChunk implements Packet{
         out.writeByte(1);
     }
 
+    public int GetMode() {
+        return 2;
+    }
+
+    public int Increase() {
+        return 0;
+    }
+
 }

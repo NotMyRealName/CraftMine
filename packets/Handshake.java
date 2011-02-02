@@ -5,6 +5,7 @@
 
 package packets;
 
+import craftmine2.Client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class Handshake implements Packet{
     String user;
     String name = "Handshake";
     byte index = 0x02;
-    
+
     public void Read(DataInputStream in) {
         try {
             user = in.readUTF();
@@ -35,6 +36,14 @@ public class Handshake implements Packet{
 
     public String GetName() {
         return name;
+    }
+
+    public int GetMode() {
+        return 0;
+    }
+
+    public int Increase() {
+        return 1;
     }
 
 }

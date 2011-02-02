@@ -53,9 +53,12 @@ public class Login implements Packet {
             out.writeUTF("");
             out.writeLong(0);
             out.writeByte(0);
-            
-            for (int X = -7; X <= 7; X++) {
-                for (int Z = -7; Z <= 7; Z++) {
+
+            //If you uncomment out the loop here, it will make 49 chunks around the player, but cause the client to crash.
+            int X=0;
+            int Z=0;
+            //for (int X = -7; X <= 7; X++) {
+            //    for (int Z = -7; Z <= 7; Z++) {
                     PreChunk pre = new PreChunk(X, Z);
                     pre.Write(out);
 
@@ -63,8 +66,8 @@ public class Login implements Packet {
                     ch.Write(out);
 
                     out.flush();
-                }
-            }
+            //    }
+            //}
 
             Spawnpos pos = new Spawnpos();
             pos.Write(out);
@@ -78,5 +81,13 @@ public class Login implements Packet {
 
     public String GetName() {
         return name;
+    }
+
+    public int GetMode() {
+        return 1;
+    }
+
+    public int Increase() {
+        return 1;
     }
 }

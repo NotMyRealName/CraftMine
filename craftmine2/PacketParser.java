@@ -39,6 +39,7 @@ public class PacketParser {
         packets.put(0x01, new packets.Login(cli.ID,this));
         packets.put(0x02, new packets.Handshake());
         packets.put(0x0D, new PositionLook());
+        packets.put(-1, new Disconnect(cli));
     }
 
     public void Handle() throws IOException{
@@ -46,10 +47,13 @@ public class PacketParser {
         if(ID!=0){
             if(packets.get(ID)!=null){
                 Packet pack = (Packet)packets.get(ID);
-                pack.Read(in);
-                pack.Write(out);
-                out.flush();
-                System.out.println("Handled packet "+pack.GetName());
+                if(pack.GetMode()==cli.Mode){
+                    pack.Read(in);
+                    pack.Write(out);
+                    out.flush();
+                    System.out.println("Handled packet "+pack.GetName());
+                    cli.Mode+=pack.Increase();
+                }
             } else{
                 System.out.println("Unknown packet ID: "+ID);
             }

@@ -30,4 +30,12 @@ public class Spawnpos implements Packet{
         out.writeInt(0);
     }
 
+    public int GetMode() {
+        return 2;
+    }
+
+    public int Increase() {
+        return 1;
+    }
+
 }

@@ -34,12 +34,20 @@ public class PositionLook implements Packet{
     public void Write(DataOutputStream out) throws IOException {
         out.writeByte(index);
         out.writeDouble(10); //X
-        out.writeDouble(60); //Y
-        out.writeDouble(60+1.62); //Stance: Y+1.62
+        out.writeDouble(55); //Y
+        out.writeDouble(55+1.62); //Stance: Y+1.62
         out.writeDouble(10); //Z
-        out.writeFloat(0);
-        out.writeFloat(0);
+        out.writeFloat(1);
+        out.writeFloat(1);
         out.writeBoolean(true);
+    }
+
+    public int GetMode() {
+        return 3;
+    }
+
+    public int Increase() {
+        return 0;
     }
 
 }

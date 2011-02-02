@@ -21,6 +21,9 @@ public class Client implements Runnable {
     Server server;
     int ID;
     public ClientData data;
+    boolean Running = true;
+    public int Mode = 0;
+    
     public Client(Socket sock, Server serv, int ind) {
         ID = ind;
         socket = sock;
@@ -30,15 +33,22 @@ public class Client implements Runnable {
     }
 
     public void run() {
-        try {
-            while (true) {
+        while (Running) {
+            try {
                 parse.Handle();
+            } catch (EOFException e) {
+                System.out.println("Client disconnected.");
+                break;
+            } catch (IOException e) {
+                System.out.println("Network error.");
+                break;
             }
-        } catch (EOFException e) {
-            System.out.println("Client disconnected.");
         }
-        catch (IOException e) {
-            System.out.println("Network error.");
-        }
+        Disconnect();
+    }
+
+    public void Disconnect(){
+        System.out.println("A client disconnected from server.");
+        Running=false;
     }
 }
