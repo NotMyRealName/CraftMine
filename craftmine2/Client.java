@@ -41,6 +41,7 @@ public class Client implements Runnable {
         packets.put(0x02, new packets.Handshake());
         packets.put(0x0D, new PositionLook(false));
         packets.put(0xB, new packets.Position(this));
+        packets.put(0xC, new packets.Look(this));
         //packets.put(-1, new Disconnect(this));
     }
 

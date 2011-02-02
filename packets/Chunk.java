@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Random;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
@@ -51,7 +52,11 @@ public class Chunk implements Packet {
             for (int Z = 0; Z <= SizeZ; Z++) {
                 for (int Y = 0; Y <= SizeY; Y++) {
                     if(Y<Height){
-                        Blocks[GetIndex(X, Y, Z)] = 1;
+                        if(X==0||X==16||Z==0||Z==16||Y==0){
+                            Blocks[GetIndex(X, Y, Z)] = 1;
+                        } else{
+                            Blocks[GetIndex(X, Y, Z)] = (byte) 0;
+                        }
                     } else{
                         Blocks[GetIndex(X, Y, Z)] = 0;
                     }

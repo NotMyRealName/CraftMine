@@ -16,8 +16,29 @@ public class ClientData {
     double X;
     double Y;
     double Z;
+    float Rot;
+    float Yaw;
 
     public ClientData() {
+    }
+
+    public float getRot() {
+        return Rot;
+    }
+
+    public void SetPosition(double x, double y, double z){
+        X=x;
+        Y=y;
+        Z=z;
+    }
+    
+    public void SetAngle(float rot, float yaw){
+        Rot=rot;
+        Yaw=yaw;
+    }
+
+    public void setRot(float Rot) {
+        this.Rot = Rot;
     }
 
     public double getX() {
@@ -34,6 +55,14 @@ public class ClientData {
 
     public void setY(double Y) {
         this.Y = Y;
+    }
+
+    public float getYaw() {
+        return Yaw;
+    }
+
+    public void setYaw(float Yaw) {
+        this.Yaw = Yaw;
     }
 
     public double getZ() {
@@ -67,6 +96,8 @@ public class ClientData {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    
 
     
 }
