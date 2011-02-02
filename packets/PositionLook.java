@@ -5,6 +5,7 @@
 
 package packets;
 
+import craftmine2.Client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,6 +17,16 @@ import java.io.IOException;
 public class PositionLook implements Packet{
     String name = "Position and Look";
     byte index = 0x0D;
+    boolean Write = false;
+    Client client=null;
+    public PositionLook(boolean write){
+        Write=write;
+    }
+    public PositionLook(boolean write, Client cli){
+        Write=write;
+        client=cli;
+    }
+
     public String GetName() {
         return name;
     }
@@ -28,22 +39,36 @@ public class PositionLook implements Packet{
         float pitch = in.readFloat();
         float yaw = in.readFloat();
         in.readBoolean();
-        System.out.println("Player is at ("+X+","+Y+","+Z+") with orientation ("+pitch+","+yaw+")");
+        if(client!=null){
+            client.data.setX(X);
+            client.data.setY(Y);
+            client.data.setZ(Z);
+        }
+        //System.out.println("Player is at ("+X+","+Y+","+Z+") with orientation ("+pitch+","+yaw+")");
     }
 
     public void Write(DataOutputStream out) throws IOException {
-        out.writeByte(index);
-        out.writeDouble(10); //X
-        out.writeDouble(55); //Y
-        out.writeDouble(55+1.62); //Stance: Y+1.62
-        out.writeDouble(10); //Z
-        out.writeFloat(1);
-        out.writeFloat(1);
-        out.writeBoolean(true);
+        if(Write==true){
+            out.writeByte(index);
+            if(client!=null){
+                out.writeDouble(client.data.getX()); //X
+                out.writeDouble(client.data.getY()); //Y
+                out.writeDouble(client.data.getZ()+1.62); //Stance: Y+1.62
+                out.writeDouble(10); //Z
+            } else{
+                out.writeDouble(0);
+                out.writeDouble(100);
+                out.writeDouble(101.62);
+                out.writeDouble(0);
+            }
+            out.writeFloat(1);
+            out.writeFloat(1);
+            out.writeBoolean(true);
+        }
     }
 
     public int GetMode() {
-        return 3;
+        return -1;
     }
 
     public int Increase() {

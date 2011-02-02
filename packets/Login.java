@@ -23,11 +23,11 @@ public class Login implements Packet {
     long Seed;
     byte Dimension;
     int ID;
-    PacketParser parse;
+    Client parse;
     String name = "Login";
     byte index = 0x01;
 
-    public Login(int id, PacketParser prs) {
+    public Login(int id, Client prs) {
         ID = id;
         parse = prs;
     }
@@ -39,8 +39,8 @@ public class Login implements Packet {
             Pass = in.readUTF();
             Seed = in.readLong();
             Dimension = in.readByte();
-            parse.cli.data.setUsername(User);
-            parse.cli.data.setPassword(Pass);
+            parse.data.setUsername(User);
+            parse.data.setPassword(Pass);
         } catch (IOException ex) {
         }
     }
@@ -48,32 +48,13 @@ public class Login implements Packet {
     public void Write(DataOutputStream out) {
         try {
             out.writeByte(index);
-            out.writeInt(ID);
-            out.writeUTF("");
-            out.writeUTF("");
-            out.writeLong(0);
+            out.writeInt(ID+1);
+            out.writeUTF("test");
+            out.writeUTF("test");
+            out.writeLong(9717680);
             out.writeByte(0);
-
-            //If you uncomment out the loop here, it will make 49 chunks around the player, but cause the client to crash.
-            int X=0;
-            int Z=0;
-            //for (int X = -7; X <= 7; X++) {
-            //    for (int Z = -7; Z <= 7; Z++) {
-                    PreChunk pre = new PreChunk(X, Z);
-                    pre.Write(out);
-
-                    Chunk ch = new Chunk(X, 50, Z, 7);
-                    ch.Write(out);
-
-                    out.flush();
-            //    }
-            //}
-
-            Spawnpos pos = new Spawnpos();
-            pos.Write(out);
-
-            PositionLook posl = new PositionLook();
-            posl.Write(out);
+            out.flush();
+            parse.SpawnClient();
         } catch (IOException ex) {
         }
 

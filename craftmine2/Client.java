@@ -4,11 +4,10 @@
  */
 package craftmine2;
 
-import java.io.EOFException;
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
+import packets.*;
 
 /**
  *
@@ -23,32 +22,56 @@ public class Client implements Runnable {
     public ClientData data;
     boolean Running = true;
     public int Mode = 0;
-    
-    public Client(Socket sock, Server serv, int ind) {
+    Map<Integer, Packet> packets = new HashMap<Integer, Packet>();
+    private final DataInputStream in;
+    private final DataOutputStream out;
+
+    public Client(Socket sock, Server serv, int ind) throws IOException {
         ID = ind;
         socket = sock;
-        parse = new PacketParser(sock, this);
         server = serv;
+        in = new DataInputStream(socket.getInputStream());
+        out = new DataOutputStream(socket.getOutputStream());
         data = new ClientData();
+        AddPackets();
+    }
+
+    public void AddPackets() {
+        packets.put(0x01, new packets.Login(ID, this));
+        packets.put(0x02, new packets.Handshake());
+        packets.put(0x0D, new PositionLook(false));
+        packets.put(0xB, new packets.Position(this));
+        //packets.put(-1, new Disconnect(this));
+    }
+
+    public void SpawnClient() throws IOException {
+        for (int x = -5; x < 5; x++) {
+            for (int z = -5; z < 5; z++) {
+                new PreChunk(x, z).Write(out);
+                new Chunk(x, 50, z, 1).Write(out);
+            }
+        }
+        new Spawnpos().Write(out);
+        new PositionLook(true).Write(out);
+        out.flush();
+        Mode=3;
     }
 
     public void run() {
-        while (Running) {
-            try {
-                parse.Handle();
-            } catch (EOFException e) {
-                System.out.println("Client disconnected.");
-                break;
-            } catch (IOException e) {
-                System.out.println("Network error.");
-                break;
+        try {
+            while (Running) {
+                PacketParser.Handle(in, out, this);
             }
+        } catch (EOFException e) {
+            System.out.println("Client disconnected.");
+        } catch (IOException e) {
+            System.out.println("Network error.");
         }
         Disconnect();
     }
 
-    public void Disconnect(){
+    public void Disconnect() {
         System.out.println("A client disconnected from server.");
-        Running=false;
+        Running = false;
     }
 }

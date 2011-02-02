@@ -13,8 +13,35 @@ public class ClientData {
     String username;
     String password;
     int id;
+    double X;
+    double Y;
+    double Z;
 
     public ClientData() {
+    }
+
+    public double getX() {
+        return X;
+    }
+
+    public void setX(double X) {
+        this.X = X;
+    }
+
+    public double getY() {
+        return Y;
+    }
+
+    public void setY(double Y) {
+        this.Y = Y;
+    }
+
+    public double getZ() {
+        return Z;
+    }
+
+    public void setZ(double Z) {
+        this.Z = Z;
     }
 
     public int getId() {

@@ -17,37 +17,15 @@ import packets.*;
  *
  * @author joseph
  */
-public class PacketParser {
-    Socket socket;
-    DataInputStream in;
-    DataOutputStream out;
-    Map<Integer, Packet> packets = new HashMap<Integer, Packet>();
-    public Client cli;
-    public PacketParser(Socket sock,Client clie){
-        cli=clie;
-        socket = sock;
-        try {
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
-        } catch (IOException ex) {
-            Logger.getLogger(PacketParser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        AddPackets();
-    }
+public class PacketParser {   
 
-    public void AddPackets(){
-        packets.put(0x01, new packets.Login(cli.ID,this));
-        packets.put(0x02, new packets.Handshake());
-        packets.put(0x0D, new PositionLook());
-        packets.put(-1, new Disconnect(cli));
-    }
-
-    public void Handle() throws IOException{
+    public static void Handle(DataInputStream in, DataOutputStream out,Client cli) throws IOException{
         int ID = in.readByte();
         if(ID!=0){
-            if(packets.get(ID)!=null){
-                Packet pack = (Packet)packets.get(ID);
-                if(pack.GetMode()==cli.Mode){
+            if(cli.packets.get(ID)!=null){
+                Packet pack = (Packet)cli.packets.get(ID);
+                //System.out.println("Trying to handle "+pack.GetName()+" packet with required mode: "+pack.GetMode()+", actual mode: "+cli.Mode);
+                if(pack.GetMode()==cli.Mode||pack.GetMode()==-1){
                     pack.Read(in);
                     pack.Write(out);
                     out.flush();

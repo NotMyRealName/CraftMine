@@ -47,18 +47,14 @@ public class Chunk implements Packet {
         byte[] light = new byte[(((SizeX+1) * (SizeY+1) * (SizeZ+1))) / 2];
         byte[] skylight = new byte[(((SizeX+1) * (SizeY+1) * (SizeZ+1))) / 2];
 
-        for (int X = 0; X < SizeX; X++) {
-            for (int Z = 0; Z < SizeZ; Z++) {
-                for (int Y = 0; Y < SizeY; Y++) {
-                    Blocks[GetIndex(X, Y, Z)] = 0;
-                }
-            }
-        }
-
-        for (int X = 0; X < SizeX; X++) {
-            for (int Z = 0; Z < SizeZ; Z++) {
-                for (int Y = 0; Y < Height; Y++) {
-                    Blocks[GetIndex(X, Y, Z)] = (byte) Material;
+        for (int X = 0; X <= SizeX; X++) {
+            for (int Z = 0; Z <= SizeZ; Z++) {
+                for (int Y = 0; Y <= SizeY; Y++) {
+                    if(Y<Height){
+                        Blocks[GetIndex(X, Y, Z)] = 1;
+                    } else{
+                        Blocks[GetIndex(X, Y, Z)] = 0;
+                    }
                 }
             }
         }
@@ -96,9 +92,9 @@ public class Chunk implements Packet {
     public void Write(DataOutputStream out) throws IOException {
         //System.out.println("Sending map chunk at ("+WorldX+","+0+","+WorldZ+")");
         out.writeByte(index);
-        out.writeInt(WorldX);
+        out.writeInt(WorldX*16);
         out.writeShort(0);
-        out.writeInt(WorldZ);
+        out.writeInt(WorldZ*16);
         out.writeByte(SizeX);
         out.writeByte(SizeY);
         out.writeByte(SizeZ);
