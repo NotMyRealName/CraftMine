@@ -94,7 +94,7 @@ public class Chunk implements Packet {
     }
 
     public void Write(DataOutputStream out) throws IOException {
-        System.out.println("Sending map chunk at ("+WorldX+","+0+","+WorldZ+")");
+        //System.out.println("Sending map chunk at ("+WorldX+","+0+","+WorldZ+")");
         out.writeByte(index);
         out.writeInt(WorldX);
         out.writeShort(0);

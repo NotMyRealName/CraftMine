@@ -33,7 +33,7 @@ public class PreChunk implements Packet{
         out.writeByte(index);
         out.writeInt(X);
         out.writeInt(Z);
-        System.out.println("Sending a prechunk at ("+X+",0,"+Z+")");
+        //System.out.println("Sending a prechunk at ("+X+",0,"+Z+")");
         out.writeByte(1);
     }
 
