@@ -46,7 +46,7 @@ public class PositionLook implements Packet {
             //client.data.setY(Y);
             //client.data.setZ(Z);
         }
-        //System.out.println("Player is at ("+X+","+Y+","+Z+") with orientation ("+pitch+","+yaw+")");
+        System.out.println("Player is at ("+X+","+Y+","+Z+") with orientation ("+pitch+","+yaw+")");
     }
 
     public void Write(DataOutputStream out) throws IOException {

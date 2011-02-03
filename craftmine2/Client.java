@@ -7,6 +7,8 @@ package craftmine2;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import packets.*;
 
 /**
@@ -22,7 +24,7 @@ public class Client implements Runnable {
     public ClientData data;
     boolean Running = true;
     public int Mode = 0;
-    Map<Integer, Packet> packets = new HashMap<Integer, Packet>();
+    Map<Byte, Packet> packets = new HashMap<Byte, Packet>();
     private final DataInputStream in;
     private final DataOutputStream out;
 
@@ -37,25 +39,33 @@ public class Client implements Runnable {
     }
 
     public void AddPackets() {
-        packets.put(0x01, new packets.Login(ID, this));
-        packets.put(0x02, new packets.Handshake());
-        packets.put(0x0D, new PositionLook(false));
-        packets.put(0xB, new packets.Position(this));
-        packets.put(0xC, new packets.Look(this));
-        //packets.put(-1, new Disconnect(this));
+        packets.put((byte)0x01, new packets.Login(ID, this));
+        packets.put((byte)0x2, new packets.Handshake());
+        packets.put((byte)0x0D, new PositionLook(false));
+        packets.put((byte)0xB, new packets.Position(this));
+        packets.put((byte)0xC, new packets.Look(this));
+        packets.put((byte)0x00, new packets.Keepalive());
+        packets.put((byte)0x12, new packets.Animation());
+        packets.put((byte)0x0E, new packets.Digging());
+        packets.put((byte)0xFF, new Disconnect(this));
     }
 
     public void SpawnClient() throws IOException {
+        new Spawnpos().Write(out);
+        new PositionLook(true).Write(out);
+        out.flush();
         for (int x = -5; x < 5; x++) {
             for (int z = -5; z < 5; z++) {
                 new PreChunk(x, z).Write(out);
                 new Chunk(x, 50, z, 1).Write(out);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                }
             }
         }
-        new Spawnpos().Write(out);
-        new PositionLook(true).Write(out);
         out.flush();
-        Mode=3;
+        Mode = 3;
     }
 
     public void run() {
@@ -68,10 +78,15 @@ public class Client implements Runnable {
         } catch (IOException e) {
             System.out.println("Network error.");
         }
-        Disconnect();
+        System.out.println("Out of while loop");
+        try {
+            Disconnect();
+        } catch (IOException ex) {
+        }
     }
 
-    public void Disconnect() {
+    public void Disconnect() throws IOException {
+        new Disconnect(this).Write(out);
         System.out.println("A client disconnected from server.");
         Running = false;
     }

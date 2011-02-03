@@ -21,7 +21,7 @@ import packets.*;
 public class PacketParser {
 
     public static void Handle(DataInputStream in, DataOutputStream out, Client cli) throws IOException {
-        int ID = in.readByte();
+        byte ID = in.readByte();
         if (cli.packets.get(ID) != null) {
             Packet pack = (Packet) cli.packets.get(ID);
             //System.out.println("Trying to handle "+pack.GetName()+" packet with required mode: "+pack.GetMode()+", actual mode: "+cli.Mode);
@@ -29,11 +29,13 @@ public class PacketParser {
                 pack.Read(in);
                 pack.Write(out);
                 out.flush();
-                //System.out.println("Handled packet " + pack.GetName());
+                if(pack.GetName()!=" "){
+                    System.out.println("Handled packet " + pack.GetName());
+                }
                 cli.Mode += pack.Increase();
             }
         } else if(ID!=10){
-            System.out.println("Unknown packet ID: " + ID);
+            System.out.println("Unknown packet ID: 0x" + ID);
         }
 
     }

@@ -47,16 +47,19 @@ public class Chunk implements Packet {
         byte[] metadata = new byte[(((SizeX+1) * (SizeY+1) * (SizeZ+1))) / 2];
         byte[] light = new byte[(((SizeX+1) * (SizeY+1) * (SizeZ+1))) / 2];
         byte[] skylight = new byte[(((SizeX+1) * (SizeY+1) * (SizeZ+1))) / 2];
-
+        boolean on = true;
         for (int X = 0; X <= SizeX; X++) {
             for (int Z = 0; Z <= SizeZ; Z++) {
                 for (int Y = 0; Y <= SizeY; Y++) {
                     if(Y<Height){
-                        if(X==0||X==16||Z==0||Z==16||Y==0){
+                        if(X==0||X==16||Z==0||Z==16||Y==0||Y==128){
                             Blocks[GetIndex(X, Y, Z)] = 1;
                         } else{
-                            Blocks[GetIndex(X, Y, Z)] = (byte) 0;
+                            Blocks[GetIndex(X, Y, Z)] = (byte) (on==true ? 4 : 0);
+                            on= !on;
                         }
+                    } else if(Y<Height+1){
+                        //Blocks[GetIndex(X, Y, Z)] = 2;
                     } else{
                         Blocks[GetIndex(X, Y, Z)] = 0;
                     }
@@ -65,7 +68,7 @@ public class Chunk implements Packet {
         }
 
 
-        for (int i = 0; i < (SizeX * SizeY * SizeX) / 2; i++) {
+        for (int i = 0; i < (((SizeX+1) * (SizeY+1) * (SizeZ+1))) / 2; i++) {
             byte nibblea = (byte) 0x00;
             byte nibbleb = (byte) 0x00;
             byte Both = (byte) ((nibblea << 4) | (nibbleb & 0x0F));
